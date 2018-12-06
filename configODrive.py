@@ -9,19 +9,20 @@ import math
 import sys, os
 
 
-
 if __name__ == "__main__":
 
 	# Find a connected ODrive (this will block until you connect one)
-	print("finding an odrive, wait a second...")
+	print("finding an odrive, wait a second...\n")
 	my_drive = odrive.find_any()
+
+	print("\n\n These are currently the settings for your odrive:\n\n")
 
 	print("The bus voltage is " + str(my_drive.vbus_voltage) + "V")
 
 	# List all the configs
-	print("Axis config setting: " + odrive.axis0.config + "\n")
-	print("Motor config setting: " + odrive.axis0.motor.config + "\n")
-	print("Encoder config setting: " + odrive.axis0.encoder.config + "\n")
+	print("Axis config setting: " + str(my_drive.axis0.config) + "\n")
+	print("Motor config setting: " + str(my_drive.axis0.motor.config) + "\n")
+	print("Encoder config setting: " + str(my_drive.axis0.encoder.config) + "\n")
 
 
 	# Erase Current Configuration
@@ -42,7 +43,7 @@ if __name__ == "__main__":
 
 	# Set number of pole pairs
 	pp_string = input("Input number of pole pairs here: ")
-	my_drive.axis0.motor.config.pole_pairs = float(pp)
+	my_drive.axis0.motor.config.pole_pairs = float(pp_string)
 
 
 	# If you are getting "ERROR_PHASE_RESISTANCE_OUT_OF_RANGE" error from the encoders
@@ -67,7 +68,13 @@ if __name__ == "__main__":
 			enc_index_string = input("Please type 'y' or 'n': ")
 
 
+	my_drive.save_configuration()
+	print("\n\nThe new configuration is now saved on the odrive for axis 0. We will now reboot to ensure the configuration.\n\n")
+	print("run 'odrivetool' from the terminal, set the state to closed loop control and try sending a position command when it boots up again")
+	
+	print("the script will now error out as it reboots\n\n")
 
+	my_drive.reboot()
 
 """ Uncomment this code to set the control gains 
 
@@ -78,11 +85,4 @@ if __name__ == "__main__":
 	print("velocity gain gain:",my_drive.axis0.controller.config.vel_gain, " A/(counts/sec)")
 
 """
-
-
-
-	my_drive.save_configuration()
-	print("The new configuration is now saved on the odrive for axis 0. We will now reboot to ensure the configuration.\n")
-	print("run 'odrivetool' from the terminal, set the state to closed loop control and try sending a position command when it boots up again")
-	my_drive.reboot()
 
