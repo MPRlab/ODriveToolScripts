@@ -20,10 +20,10 @@ if __name__ == "__main__":
 	print("The bus voltage is " + str(my_drive.vbus_voltage) + "V")
 
 	# List all the configs
-	print("Axis config setting: " + str(my_drive.axis0.config) + "\n")
-	print("Motor config setting: " + str(my_drive.axis0.motor.config) + "\n")
-	print("Encoder config setting: " + str(my_drive.axis0.encoder.config) + "\n")
-
+	print("Axis 0 config setting: " + str(my_drive.axis0.config) + "\n\n")
+	print("Motor config setting: " + str(my_drive.axis0.motor.config) + "\n\n")
+	print("Encoder config setting: " + str(my_drive.axis0.encoder.config) + "\n\n")
+	print("Controller config setting: " + str(my_drive.axis0.controller.config) + "\n\n")
 
 	# Erase Current Configuration
 	text = input("Would you like to erase the existing configuration (y/n): ")
@@ -68,6 +68,19 @@ if __name__ == "__main__":
 			enc_index_string = input("Please type 'y' or 'n': ")
 
 
+	# Set to be pre-calibrated
+	# my_drive.pre_calibrated = True
+
+	# Calibrate
+	print("starting calibration")
+	my_drive.axis0.encoder.config.use_index = True
+	my_drive.axis0.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+
+	print("waiting for calibration to end...")
+	while my_drive.axis0.current_state != AXIS_STATE_IDLE:
+	    time.sleep(0.1)
+
+	print("Saving the configuration");
 	my_drive.save_configuration()
 	print("\n\nThe new configuration is now saved on the odrive for axis 0. We will now reboot to ensure the configuration.\n\n")
 	print("run 'odrivetool' from the terminal, set the state to closed loop control and try sending a position command when it boots up again")
